@@ -1,0 +1,52 @@
+# CI for a PLEYN application.
+#
+# Two jobs, because the test tiers are two. `fast` has no database service at
+# all: that is what stops a "unit" test quietly reaching for a query and joining
+# the slow tier without anybody noticing.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  fast:
+    name: types, lint, docs, markup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run test:unit
+
+  check:
+    name: the full suite
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: pleyn
+          POSTGRES_PASSWORD: pleyn
+          POSTGRES_DB: pleyn
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pleyn -d pleyn"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://pleyn:pleyn@127.0.0.1:5432/pleyn
+      SECRET_KEY: a-key-that-is-only-for-continuous-integration
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run test:db

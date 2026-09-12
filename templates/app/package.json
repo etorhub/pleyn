@@ -1,0 +1,45 @@
+{
+  "name": "pleyn-app-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/server.ts",
+    "start": "bun run src/server.ts",
+    "cli": "bun run src/cli.ts",
+    "ok": "bun run check && bun run test:unit",
+    "check": "bun run scripts/check.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "docs": "bun run scripts/agents-md.ts",
+    "docs:check": "bun run scripts/agents-md.ts --check",
+    "test": "bun test",
+    "test:unit": "SKIP_MIGRATIONS=true bun test tests/unit",
+    "test:db": "bun run db:apply && SKIP_MIGRATIONS=true bun test",
+    "db:apply": "bun run src/db/migrate.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "css": "tailwindcss -i src/styles/app.css -o public/app.css",
+    "css:watch": "tailwindcss -i src/styles/app.css -o public/app.css --watch",
+    "new-resource": "bun run scripts/new-resource.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "drizzle-zod": "^0.8.3",
+    "hono": "^4.6.14",
+    "postgres": "^3.4.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "@types/bun": "^1.1.14",
+    "drizzle-kit": "^0.31.10",
+    "htmx-contract": "^0.1.0",
+    "oxlint": "^1.81.0",
+    "prettier": "^3.9.6",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2"
+  }
+}

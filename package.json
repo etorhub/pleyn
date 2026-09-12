@@ -8,7 +8,10 @@
     "type": "git",
     "url": "git+https://github.com/etorhub/pleyn.git"
   },
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*",
+    "templates/app"
+  ],
   "scripts": {
     "test": "bun test packages",
     "typecheck": "bun run --filter '*' typecheck",

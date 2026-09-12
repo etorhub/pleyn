@@ -1,0 +1,27 @@
+{
+  "name": "create-pleyn",
+  "version": "0.1.0",
+  "description": "Creates a PLEYN application: Bun, Hono, htmx, Drizzle and Postgres, installed, migrated, seeded and running.",
+  "type": "module",
+  "license": "MIT",
+  "author": "etorhub",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/etorhub/pleyn.git",
+    "directory": "packages/create-pleyn"
+  },
+  "homepage": "https://github.com/etorhub/pleyn#readme",
+  "bugs": "https://github.com/etorhub/pleyn/issues",
+  "keywords": ["pleyn", "htmx", "hypermedia", "hono", "bun", "drizzle", "scaffold", "create"],
+  "bin": {
+    "create-pleyn": "./index.ts"
+  },
+  "files": ["index.ts", "template", "README.md", "LICENSE"],
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "prepack": "bun run ../../scripts/bundle-template.ts"
+  }
+}

@@ -1,0 +1,23 @@
+# Postgres for development.
+#
+# `bun create pleyn` starts this for you, waits for it to be healthy, and runs
+# the migrations. `bun run db:up` and `bun run db:down` afterwards.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: pleyn
+      POSTGRES_PASSWORD: pleyn
+      POSTGRES_DB: pleyn
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pleyn -d pleyn"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:

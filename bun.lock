@@ -9,6 +9,13 @@
         "typescript": "^5.7.2",
       },
     },
+    "packages/create-pleyn": {
+      "name": "create-pleyn",
+      "version": "0.1.0",
+      "bin": {
+        "create-pleyn": "./index.ts",
+      },
+    },
     "packages/htmx-contract": {
       "name": "htmx-contract",
       "version": "0.1.0",
@@ -208,6 +215,8 @@
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
 
     "bun-types": ["bun-types@1.4.2", "", { "dependencies": { "@types/node": "*" } }, "sha512-bxV1FgK7yBIzjRe5zBozIM4Bem11ZJcCXSrjWRG3YWLt8yFDePu4cLjpebO8OvPeIE9trbyPF4fuj3Cia4Fj3w=="],
+
+    "create-pleyn": ["create-pleyn@workspace:packages/create-pleyn"],
 
     "detect-libc": ["detect-libc@1.0.3", "", { "bin": { "detect-libc": "./bin/detect-libc.js" } }, "sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg=="],
 

@@ -1,0 +1,22 @@
+{
+  "name": "pleyn",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "An opinionated hypermedia stack: Bun, Hono, hono/html, htmx, Drizzle, PostgreSQL.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/etorhub/pleyn.git"
+  },
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "test": "bun test packages",
+    "typecheck": "bun run --filter '*' typecheck",
+    "leaks": "bun run scripts/no-leaks.ts",
+    "check": "bun run typecheck && bun run leaks && bun test packages"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # No services. Nothing in this repository needs infrastructure to be
+    # checked: the library knows nothing about any application, and the
+    # template is checked as source, not run.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+      - run: bun install --frozen-lockfile
+      - name: Types
+        run: bun run typecheck
+      - name: No references to the origin application
+        run: bun run leaks
+      - name: Tests
+        run: bun test packages

@@ -1,0 +1,120 @@
+---
+title: "Conventions"
+description: "The rules a PLEYN application lives by — dual-maintained with the template AGENTS.md."
+---
+
+:::caution[Dual-maintained]
+This page and [`templates/app/AGENTS.md`](https://github.com/etorhub/pleyn/blob/main/templates/app/AGENTS.md)
+must say the same things. Change one → change the other in the same PR. See
+[Docs sync](/contributing/docs/).
+:::
+
+Read this before changing a generated application. It is short on purpose; the
+lookup tables live in `docs/reference.md` and are generated from the code.
+
+Most of these conventions are enforced by `bun run check` rather than by trust.
+
+## One command
+
+```bash
+bun run ok
+```
+
+Types, lint, format, generated docs, and the fast tests. It names the step that
+failed and what to do about it. Nothing is finished until this is green.
+
+`bun run test:db` additionally runs the tests that need Postgres.
+
+## The shape of a resource
+
+Every resource under `src/routes/` is **four files with fixed names**:
+
+| File | What belongs in it |
+| --- | --- |
+| `<name>.routes.ts` | reading parameters, authorizing, calling a service, drawing |
+| `<name>.page.ts` | the whole page, for `GET <base>` |
+| `<name>.fragment.ts` | everything htmx can ask for on its own |
+| `<name>.schema.ts` | the Zod schemas for query and body |
+
+Do not create these by hand:
+
+```bash
+bun run new-resource projects
+```
+
+It writes all four, registers the routes behind the session guard, and registers
+the list's out-of-band target. `src/routes/tasks/` is the worked example — copy
+from it.
+
+## The rules
+
+**`GET <base>` always returns a whole page. `GET <base>/fragment/<name>` always
+returns a fragment.** The URL decides what comes back, never the `HX-Request`
+header. A route whose response depends on a request header cannot be linked to,
+cached, or opened in a new tab.
+
+**A mutation returns the piece that changed**, plus whatever else changed, out of
+band via `withOob()`.
+
+**Every out-of-band target is registered in `src/lib/oob.ts`.** `oobAttributes()`
+accepts no id that is not in the registry, so an unregistered target does not
+compile. The table in `docs/reference.md` is generated from it.
+
+**A response that is nothing but a toast must send `HX-Reswap: none`.** Use
+`toastOnly()`, which does it for you. Without the header htmx swaps the
+emptiness left after the out-of-band nodes are lifted out into `hx-target` —
+which under `hx-swap="outerHTML"` deletes the element the user was touching.
+
+**Rows and the empty state are drawn by the same function.** Pass both to
+`DataTable()`. Rendered in separate branches, deleting the last row leaves a
+table header standing over nothing, for ever.
+
+**Per-row controls never sit inside one enclosing `<form>`.** For a non-GET
+request htmx collects the surrounding form's values and lets them override the
+element's own, so every row ships every other row's value. Give each row its own
+`hx-*` attributes, as `tasks.fragment.ts` does.
+
+**A poll declares a bound.** Use `poll()` from `src/lib/polling.ts` and check
+`pollExhausted()`; never write `hx-trigger="every 2s"` by hand. A poll whose only
+stop condition is a terminal state runs for ever when the work dies without
+reaching one, for everyone looking at the page.
+
+**Filters live in the query string**, and a fragment route pushes **the page's**
+URL with `pushUrl()`, never its own.
+
+**"You may not" and "it does not exist" are the same answer: 404.** The
+difference between them is a way of counting other people's rows.
+
+**The CSRF token is published once**, in the `<body>`'s `hx-headers`, and every
+htmx request inherits it. Never one per form.
+
+**No CDNs.** htmx, the stylesheet and the fonts are served by this application.
+A third-party script tag is a third party that can change your pages.
+
+## Language
+
+Code is English: identifiers, comments, commit messages, test names, filenames.
+
+Text that reaches a screen is whatever language your users read. Keep it in the
+templates, not in the services, so there is one place to look.
+
+## Generated documentation
+
+The tables in `docs/reference.md` come out of `src/lib/oob.ts` and
+`src/routes/`. Run `bun run docs` after adding a resource or a target;
+`bun run check` fails when they drift. Do not edit between the
+`<!-- generated:… -->` markers — the next run overwrites it.
+
+## Tests
+
+Two tiers, declared rather than implied:
+
+- `tests/unit/` — markup only, no database, runs in under a second, and in CI
+  as a job with **no database service at all**. That is what keeps the
+  separation honest.
+- `tests/` — the rest, against real Postgres.
+
+`tests/contract.test.ts` walks pages through `htmx-contract`, which models
+htmx's swap algorithm and asserts on the DOM *after* the interaction. Assert on
+the page after the swap, not on the response body: the response body is not what
+the user ends up looking at.

@@ -23,6 +23,45 @@ export type RuleName =
   | "target-identity-lost"
   | "unbounded-poll";
 
+/**
+ * Every rule, with a one-line summary for docs and tables.
+ *
+ * Single source of truth for the *set* of rules: adding a rule means adding it
+ * here, implementing it, pinning a fixture, and expanding the docs page.
+ */
+export const RULES: readonly { name: RuleName; summary: string }[] = [
+  {
+    name: "empty-after-oob",
+    summary:
+      "A response empty after out-of-band extraction, without HX-Reswap: none — outerHTML deletes the target.",
+  },
+  {
+    name: "duplicate-id",
+    summary: "The same id twice in one document; htmx swaps the first match.",
+  },
+  {
+    name: "duplicate-field-in-form",
+    summary:
+      "Two controls sharing a name inside one form; htmx lets the form override the element.",
+  },
+  {
+    name: "target-identity-lost",
+    summary: "An outerHTML swap whose replacement does not keep the target id.",
+  },
+  {
+    name: "unbounded-poll",
+    summary: 'hx-trigger="every …" with no declared bound.',
+  },
+  {
+    name: "dead-target",
+    summary: "hx-target points at an id that is not in the document.",
+  },
+  {
+    name: "dead-oob",
+    summary: "An out-of-band node whose target is missing, or which names no target.",
+  },
+];
+
 export interface Violation {
   rule: RuleName;
   message: string;

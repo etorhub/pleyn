@@ -24,6 +24,10 @@ import { existsSync } from "node:fs";
 import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 
+import { CLI_FLAGS } from "./flags.ts";
+
+export { CLI_FLAGS, type CliFlag } from "./flags.ts";
+
 // --- Output ------------------------------------------------------------------
 
 const ESC = String.fromCodePoint(27);
@@ -65,12 +69,11 @@ interface Options {
 }
 
 function usage(): never {
-  console.log(
-    `\n  ${BOLD}bun create pleyn${OFF} <directory> [options]\n\n` +
-      "    --no-docker    do not start Postgres; use DATABASE_URL as it stands\n" +
-      "    --no-install   do not run bun install\n" +
-      "    --no-git       do not create a git repository\n",
-  );
+  const flagLines = CLI_FLAGS.map((f) => {
+    const pad = " ".repeat(Math.max(2, 16 - f.flag.length));
+    return `    ${f.flag}${pad}${f.description}\n`;
+  }).join("");
+  console.log(`\n  ${BOLD}bun create pleyn${OFF} <directory> [options]\n\n${flagLines}`);
   process.exit(0);
 }
 

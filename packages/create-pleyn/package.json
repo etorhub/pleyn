@@ -10,13 +10,13 @@
     "url": "git+https://github.com/etorhub/pleyn.git",
     "directory": "packages/create-pleyn"
   },
-  "homepage": "https://github.com/etorhub/pleyn#readme",
+  "homepage": "https://etorhub.github.io/pleyn/",
   "bugs": "https://github.com/etorhub/pleyn/issues",
   "keywords": ["pleyn", "htmx", "hypermedia", "hono", "bun", "drizzle", "scaffold", "create"],
   "bin": {
     "create-pleyn": "./index.ts"
   },
-  "files": ["index.ts", "template", "README.md", "LICENSE"],
+  "files": ["index.ts", "flags.ts", "template", "README.md", "LICENSE"],
   "engines": {
     "bun": ">=1.2.0"
   },

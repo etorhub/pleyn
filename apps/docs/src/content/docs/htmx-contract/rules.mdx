@@ -1,0 +1,16 @@
+---
+title: "Rules overview"
+description: "The seven htmx-contract rules at a glance."
+---
+
+import { Content as Generated } from "../../../generated/rules.md";
+
+Every rule exists because the bug shipped. Each is pinned against the markup of
+the failure it claims to catch — a rule that cannot fail its own fixture is
+decoration.
+
+<Generated />
+
+Expanded pages (stubs until filled) live under each rule name in the sidebar.
+When you add a rule: implement it, add it to `RULES`, pin a fixture, expand its
+page, run `bun run docs:sync`.

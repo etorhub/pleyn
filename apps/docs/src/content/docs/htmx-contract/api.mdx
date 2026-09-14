@@ -1,0 +1,31 @@
+---
+title: "API reference"
+description: "Public exports of htmx-contract."
+---
+
+import { Content as Exports } from "../../../generated/exports.md";
+import { Content as Versions } from "../../../generated/versions.md";
+
+:::note[TODO]
+Expand with hand-written signatures and examples for `checkDocument`,
+`checkResponse`, `swapAndCheck`, `formatViolations`, `applySwap`, `inspect`,
+`pollAttributes`, and the fixture constants. The export table below is generated
+and must stay generated.
+:::
+
+<Versions />
+
+<Exports />
+
+### Primary entry (`htmx-contract`)
+
+| Symbol | Role |
+| --- | --- |
+| `checkDocument(html, options?)` | Is this rendered page self-consistent? |
+| `checkResponse(options)` | Would this response, swapped into that page, do damage? |
+| `swapAndCheck(options)` | Apply the modelled swap and return `{ html, violations }`. |
+| `formatViolations(violations)` | Human-readable violation text for test failures. |
+| `RULES` | The rule list (also the docs sync source). |
+
+Assert on the DOM *after* the swap, not on the response body. The response body
+is not what the user ends up looking at.

@@ -32,7 +32,7 @@ const BANNED = [
   "f80df91",
 ];
 
-const SKIP_DIRS = new Set([".git", "node_modules", "dist", ".next", "coverage"]);
+const SKIP_DIRS = new Set([".git", "node_modules", "dist", ".next", "coverage", ".astro"]);
 const TEXT = /\.(ts|tsx|js|json|md|yml|yaml|css|html|sql|toml)$/;
 
 async function* walk(dir: string): AsyncGenerator<string> {

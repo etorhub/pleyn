@@ -43,7 +43,7 @@ export {
 
 export { applySwap, MODELLED, type SwapInput, type SwapResult } from "./swap.ts";
 
-export type { RuleName, Violation } from "./rules.ts";
+export { RULES, type RuleName, type Violation } from "./rules.ts";
 
 import { inspect, type Snapshot } from "./inspect.ts";
 import {

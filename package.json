@@ -10,13 +10,18 @@
   },
   "workspaces": [
     "packages/*",
-    "templates/app"
+    "templates/app",
+    "apps/*"
   ],
   "scripts": {
     "test": "bun test packages",
     "typecheck": "bun run --filter '*' typecheck",
     "leaks": "bun run scripts/no-leaks.ts",
-    "check": "bun run typecheck && bun run leaks && bun test packages"
+    "check": "bun run typecheck && bun run leaks && bun test packages",
+    "docs:dev": "bun run --filter @pleyn/docs dev",
+    "docs:build": "bun run --filter @pleyn/docs build",
+    "docs:sync": "bun run --filter @pleyn/docs sync",
+    "docs:check": "bun run --filter @pleyn/docs check"
   },
   "devDependencies": {
     "@types/bun": "^1.1.14",

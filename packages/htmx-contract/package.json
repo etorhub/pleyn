@@ -10,7 +10,7 @@
     "url": "git+https://github.com/etorhub/pleyn.git",
     "directory": "packages/htmx-contract"
   },
-  "homepage": "https://github.com/etorhub/pleyn/tree/main/packages/htmx-contract#readme",
+  "homepage": "https://etorhub.github.io/pleyn/htmx-contract/install/",
   "bugs": "https://github.com/etorhub/pleyn/issues",
   "keywords": [
     "htmx",

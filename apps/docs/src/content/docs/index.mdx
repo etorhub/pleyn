@@ -1,0 +1,44 @@
+---
+title: PLEYN
+description: "An opinionated hypermedia stack — Bun, Hono, htmx, Drizzle — with the HTML↔DOM seam checked."
+---
+
+import { Content as Versions } from "../../generated/versions.md";
+
+_Middle English for **plain**._
+
+**Bun · Hono · `hono/html` · htmx · Drizzle · PostgreSQL · Zod · Tailwind**
+
+Plain HTML, plain strings, nothing clever. The server renders HTML. htmx swaps
+in the piece that changed. There is no bundler, no client router, no client
+state, and no JSON API for the browser.
+
+What PLEYN adds is one thing: **the seam between the HTML a route returns and
+the DOM that receives it is checked statically**, in under a second, with no
+browser.
+
+```bash
+bun create pleyn my-app
+```
+
+One command. It leaves a running application: sessions, CSRF, argon2id
+passwords, a worked resource, a test suite, and an `AGENTS.md`. The opinions
+are already applied. That is the point.
+
+## Versions
+
+<Versions />
+
+## Where to go
+
+- **[Install & create](/getting-started/install/)** — prerequisites and the first command
+- **[Why PLEYN](/getting-started/why/)** — the four failure classes the stack exists for
+- **[Conventions](/application/conventions/)** — the rules a generated app lives by
+- **[`htmx-contract`](/htmx-contract/install/)** — the checker, usable with any htmx backend
+
+## Early, and honest about it
+
+`htmx-contract` is not on npm yet. Until it is, create with `--no-install` and
+point the project at a local copy. See [Install](/getting-started/install/).
+
+Docs track **`create-pleyn`’s version**. See [Docs sync & versions](/contributing/docs/).

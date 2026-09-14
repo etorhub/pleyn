@@ -1,0 +1,56 @@
+{
+  "createPleynVersion": "0.1.0",
+  "htmxContractVersion": "0.1.0",
+  "flags": [
+    {
+      "flag": "--no-docker",
+      "description": "do not start Postgres; use DATABASE_URL as it stands"
+    },
+    {
+      "flag": "--no-install",
+      "description": "do not run bun install"
+    },
+    {
+      "flag": "--no-git",
+      "description": "do not create a git repository"
+    }
+  ],
+  "rules": [
+    {
+      "name": "empty-after-oob",
+      "summary": "A response empty after out-of-band extraction, without HX-Reswap: none — outerHTML deletes the target."
+    },
+    {
+      "name": "duplicate-id",
+      "summary": "The same id twice in one document; htmx swaps the first match."
+    },
+    {
+      "name": "duplicate-field-in-form",
+      "summary": "Two controls sharing a name inside one form; htmx lets the form override the element."
+    },
+    {
+      "name": "target-identity-lost",
+      "summary": "An outerHTML swap whose replacement does not keep the target id."
+    },
+    {
+      "name": "unbounded-poll",
+      "summary": "hx-trigger=\"every …\" with no declared bound."
+    },
+    {
+      "name": "dead-target",
+      "summary": "hx-target points at an id that is not in the document."
+    },
+    {
+      "name": "dead-oob",
+      "summary": "An out-of-band node whose target is missing, or which names no target."
+    }
+  ],
+  "exports": {
+    ".": "./index.ts",
+    "./fixtures": "./fixtures.ts",
+    "./inspect": "./inspect.ts",
+    "./poll": "./poll.ts",
+    "./rules": "./rules.ts",
+    "./swap": "./swap.ts"
+  }
+}

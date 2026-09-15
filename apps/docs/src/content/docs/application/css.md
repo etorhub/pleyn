@@ -1,5 +1,5 @@
 ---
-title: "CSS"
+title: "CSS & Tailwind"
 description: "Local Tailwind build, no CDN, css and css:watch."
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "Toast-only"
+title: "Toast-only mutation"
 description: "OOB toast with HX-Reswap: none so the target is not deleted."
 ---
 

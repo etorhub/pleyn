@@ -66,7 +66,9 @@ Until that first archive, only the current docs set exists.
 ## Filling stubs
 
 Prefer expanding an existing stub page over inventing a new top-level sidebar
-section. Stubs carry a `TODO` callout so the next pass knows what belongs there.
+section. A stub carries a `TODO` callout so the next pass knows what belongs
+there — as of this page, every sidebar entry is filled and none remain, but
+the rule holds for whatever gets stubbed in next.
 
 ## CI
 

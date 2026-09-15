@@ -72,6 +72,7 @@ Full process: [Docs sync & versions](apps/docs/src/content/docs/contributing/doc
 
 ## Prefer stubs
 
-The sidebar already lists every planned page. Many are stubs with a `TODO`
-callout. Expand those. Do not add parallel top-level sections for the same
-topic.
+The sidebar already lists every planned page, and today every one of them is
+filled — no `TODO` callouts remain. If a future page starts as a stub with one,
+expand it rather than leaving it. Either way: do not add parallel top-level
+sections for a topic that already has a page.

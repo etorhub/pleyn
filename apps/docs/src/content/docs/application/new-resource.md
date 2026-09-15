@@ -4,8 +4,11 @@ description: "Scaffold a four-file resource with bun run new-resource."
 ---
 
 Do not create the four resource files by hand. The naming is load-bearing:
-`scripts/agents-md.ts` reads the directory for `docs/reference.md`, and
-`bun run check` fails when a resource is missing one of them.
+`scripts/agents-md.ts` reads the directory for `docs/reference.md` and records
+which of the four files each resource has. It is a table, not a gate —
+`bun run check` fails only if that table falls out of sync with the
+filesystem, not if a resource is missing a file. Scaffolding keeps you from
+finding that out the hard way.
 
 ```bash
 bun run new-resource <name> [--path <segment>] [--title <Title>]

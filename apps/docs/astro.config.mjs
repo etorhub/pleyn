@@ -1,19 +1,69 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import { unified } from "@astrojs/markdown-remark";
 
 import createPleynPkg from "../../packages/create-pleyn/package.json";
 
 const versionLabel = `v${createPleynPkg.version}`;
+const base = "/pleyn";
 
 // Docs versioning follows create-pleyn's semver. Versions are generated into
 // src/generated/versions.md. Enable `starlight-versions` when cutting the first
 // archived release (the plugin requires ≥1 archive). See contributing/docs.md.
 
+/**
+ * The slice of a hast node this plugin touches. Not importing `hast`'s own
+ * types: it is a transitive dependency here, not a declared one.
+ * @typedef {{
+ *   type: string;
+ *   tagName?: string;
+ *   properties?: { href?: unknown };
+ *   children?: HastNode[];
+ * }} HastNode
+ */
+
+/**
+ * Prefixes root-absolute links written in Markdown prose with `base`.
+ *
+ * Starlight prefixes the links *it* generates (sidebar, pagination,
+ * breadcrumbs) with `base` automatically. A plain Markdown link written as
+ * `[x](/htmx-contract/api/)` is not one of those — it is an `<a>` the
+ * Markdown renderer emitted as-is, and without this it 404s under
+ * `/pleyn/`. One rehype pass fixes every such link, present and future,
+ * instead of every page author having to remember the prefix by hand.
+ */
+function rehypeBaseLinks() {
+  /** @param {HastNode} tree */
+  return (tree) => {
+    /** @param {HastNode} node */
+    function visit(node) {
+      if (
+        node.type === "element" &&
+        node.tagName === "a" &&
+        typeof node.properties?.href === "string"
+      ) {
+        const href = node.properties.href;
+        const alreadyPrefixed = href === base || href.startsWith(`${base}/`);
+        if (href.startsWith("/") && !href.startsWith("//") && !alreadyPrefixed) {
+          node.properties.href = base + href;
+        }
+      }
+      for (const child of node.children ?? []) visit(child);
+    }
+    visit(tree);
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://etorhub.github.io",
-  base: "/pleyn",
+  base,
+  markdown: {
+    // Astro 7's default processor (Sätteri) doesn't run rehype plugins; the
+    // legacy `unified` one from `@astrojs/markdown-remark` does.
+    processor: unified({ rehypePlugins: [rehypeBaseLinks] }),
+  },
   integrations: [
     starlight({
       title: "PLEYN",

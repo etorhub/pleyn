@@ -1,5 +1,5 @@
 ---
-title: "Swap model"
+title: "Swap model & limits"
 description: "What htmx-contract models — and what it deliberately does not."
 ---
 

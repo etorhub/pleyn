@@ -28,5 +28,6 @@ separate so a library change does not wait on Postgres or Astro.
 4. **create-pleyn** — generate with `--no-docker --no-install`, point at workspace
    `htmx-contract` via `file:`, then run the generated app's checks
 
-Until the first npm publish, the CLI job's `--no-install` + `file:` path is the
-honest end-to-end path — see [Publishing](/contributing/publishing/).
+Registry install is the happy path for real users (`bun create pleyn`). The CLI
+CI job keeps the `--no-install` + `file:` rewrite so it always exercises the
+workspace library without depending on npm — see [Publishing](/contributing/publishing/).

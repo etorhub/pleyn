@@ -12,8 +12,7 @@ application. **Bun only**, for now — the package requires Bun ≥ 1.2.
 
 Generated PLEYN apps already depend on `htmx-contract: ^0.1.0` as a
 devDependency. You only need this page when adding the checker to an existing
-htmx backend, or until the first npm publish (then point at a local path — see
-[Install & create](/getting-started/install/)).
+htmx backend.
 
 ## Next
 

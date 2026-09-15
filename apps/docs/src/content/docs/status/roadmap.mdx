@@ -60,13 +60,10 @@ and hoping.
   connections, migrates, seeds and builds the stylesheet.
 - **This documentation site** — Starlight under `apps/docs`, with generated
   fragments, filled sidebar pages, and a mandatory CI job.
+- **`htmx-contract` and `create-pleyn` on npm** — published from GitHub Actions
+  with provenance. See [Publishing](/contributing/publishing/).
 
 ## Next
 
-1. **Publish `htmx-contract` to npm.** Everything else is blocked behind it:
-   until it resolves, `bun create pleyn` cannot install. Publish from GitHub
-   Actions with `--provenance`.
-2. **Publish `create-pleyn`.** `bun create pleyn` maps to the `create-pleyn`
-   package; `prepack` bundles the template into it.
-3. **A hosted demo**, so the claim can be seen rather than read.
-4. **A lint rule for the `db.execute<T>()` trap** — see [Pitfalls](/status/pitfalls/).
+1. **A hosted demo**, so the claim can be seen rather than read.
+2. **A lint rule for the `db.execute<T>()` trap** — see [Pitfalls](/status/pitfalls/).

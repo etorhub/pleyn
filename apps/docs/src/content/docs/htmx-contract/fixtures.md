@@ -1,5 +1,5 @@
 ---
-title: "Fixtures"
+title: "Fixtures & poll"
 description: "Regression fixtures and poll helpers."
 ---
 

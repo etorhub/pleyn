@@ -1,5 +1,5 @@
 ---
-title: "Auth"
+title: "Auth, sessions, CSRF"
 description: "Sessions as digests, argon2id passwords, and CSRF on the body."
 ---
 

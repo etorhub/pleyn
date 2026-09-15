@@ -1,5 +1,5 @@
 ---
-title: "Database"
+title: "Database & Drizzle"
 description: "Migrations, generate, and the db.execute generic trap."
 ---
 

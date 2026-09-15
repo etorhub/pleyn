@@ -29,8 +29,13 @@ Output is Prettier'd so format and check do not fight.
 ## Why it matters
 
 `oobAttributes()` only accepts registered ids — the registry is load-bearing,
-not documentation fluff. The resources table encodes the four-file rule so
-`check` fails when a file is missing.
+not documentation fluff. The resources table is not: it records which of the
+four files each resource under `src/routes/` has, and `check` fails only when
+that table drifts from the filesystem — not when a resource is missing a file
+outright. A resource with `—` in three columns (`home/` is one) is honest, not
+broken. Nothing today fails a resource for being incomplete; see
+[Conventions](/application/conventions/) for the shape a resource is meant to
+have.
 
 Do not edit between the markers. After adding a resource or an OOB target, run
 `bun run docs`. The short rules stay in `AGENTS.md`; the tables live here so

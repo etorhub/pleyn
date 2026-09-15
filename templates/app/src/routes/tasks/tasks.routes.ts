@@ -112,6 +112,8 @@ tasksRoutes.post("/", async (c) => {
   ]);
 
   // The form is the target; the list and the counter ride along out of band.
+  // Both of them have to say so — `oob` on the list, `true` on the counter.
+  // A node that does not is left in the remainder and swapped into the form.
   return fragment(
     c,
     await withOob(
@@ -121,6 +123,7 @@ tasksRoutes.post("/", async (c) => {
         filters: taskQuerySchema.parse({}),
         total: list.total,
         pages: list.pages,
+        oob: true,
       }),
       PendingCount(pending, true),
       toast("Task added", "success"),

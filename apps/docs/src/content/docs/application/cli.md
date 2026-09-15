@@ -92,14 +92,17 @@ target. `--swap` runs that model — `htmx-contract`'s, the same one the test
 suite asserts through — and prints the DOM that results.
 
 ```bash
-bun run cli request /tasks/fragment/list --as demo@example.com --swap
+bun run cli request POST /tasks --as demo@example.com --form title="Write it down" --swap
 ```
 
 ```
-GET /tasks/fragment/list → 200 as demo@example.com
+POST /tasks → 200 as demo@example.com
 
-Swapped into #task-list (page) with outerHTML (page), from /tasks
-  triggered by <a> via hx-get
+Swapped into #task-form (page) with outerHTML (page), from /tasks
+  triggered by <form id="task-form"> via hx-post
+  out of band → #task-list (outerHTML)
+  out of band → #pending-count (outerHTML)
+  out of band → #toast (innerHTML)
 
 Contract: no violations.
 ```
@@ -129,10 +132,12 @@ than guessing: a guessed target produces a confidently wrong DOM.
   starting page was already carrying is subtracted, so a swap is never blamed
   for a pre-existing problem.
 
-That second one is the whole point. A response carrying one `#task-list` is
-impeccable; the same response swapped into a page that already has one leaves
-two, and from then on htmx swaps the first match for ever. Only the post-swap
-document shows it.
+That second one is the whole point, and it is not hypothetical: this command
+found exactly that in the template's own `tasks` resource. A response carrying
+one `#task-list` is impeccable; the same response swapped into a page that
+already has one leaves two, and from then on htmx swaps the first match for
+ever. Only the post-swap document shows it — see
+[Pitfalls](/status/pitfalls/).
 
 By default the printed DOM is the **target's subtree** — what the interaction
 changed. `--full` prints the whole post-swap document and adds `swap.html` to

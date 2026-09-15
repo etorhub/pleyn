@@ -80,6 +80,14 @@ band via `withOob()`.
 accepts no id that is not in the registry, so an unregistered target does not
 compile. The table in `docs/reference.md` is generated from it.
 
+**Registering a target is not sending one.** The registry types the id;
+`hx-swap-oob` is what makes htmx lift the node out of the response, and
+`oobAttributes(id, true)` is what puts it there. A component that is the
+response in one route and a passenger in another — `TaskList` is both — has to
+be told which it is. Left as a passenger without the flag it stays in the
+remainder and is swapped into whatever the request targeted, and the page ends
+up with two of every id in it.
+
 **A response that is nothing but a toast must send `HX-Reswap: none`.** Use
 `toastOnly()`, which does it for you. Without the header htmx swaps the
 emptiness left after the out-of-band nodes are lifted out into `hx-target` —

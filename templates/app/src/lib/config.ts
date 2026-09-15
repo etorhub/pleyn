@@ -51,14 +51,13 @@ export const config = {
 const DEFAULT_SECRET = "development-only-key-change-me-please-32";
 
 /**
- * Complains about anything unsafe.
+ * Everything unsafe about the configuration as it stands.
  *
- * Outside production this warns and carries on, because a developer running
- * `bun run dev` should not be stopped by a missing secret. In production it
- * throws: a deployment that silently used the published default key would be
- * worse than one that refused to start.
+ * Separate from `validateConfig()` so that `bun run cli doctor` can report
+ * exactly what the server would refuse to start on, rather than keeping a
+ * second opinion that drifts from this one.
  */
-export function validateConfig(): void {
+export function configProblems(): string[] {
   const problems: string[] = [];
 
   if (config.secretKey === DEFAULT_SECRET) {
@@ -70,6 +69,20 @@ export function validateConfig(): void {
   if (config.environment === "production" && !config.cookieSecure) {
     problems.push("COOKIE_SECURE is false in production");
   }
+
+  return problems;
+}
+
+/**
+ * Complains about anything unsafe.
+ *
+ * Outside production this warns and carries on, because a developer running
+ * `bun run dev` should not be stopped by a missing secret. In production it
+ * throws: a deployment that silently used the published default key would be
+ * worse than one that refused to start.
+ */
+export function validateConfig(): void {
+  const problems = configProblems();
 
   if (problems.length === 0) return;
 

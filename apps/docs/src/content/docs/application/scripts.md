@@ -16,9 +16,24 @@ the lookup for what each script does.
 | `bun run check` | Types → lint → format:check → docs:check ([`scripts/check.ts`](https://github.com/etorhub/pleyn/blob/main/templates/app/scripts/check.ts)) |
 | `bun run format` | Prettier write |
 | `bun run cli …` | Operational commands — see [App CLI](/application/cli/) |
+| `bun run cli doctor` | Is this checkout able to run, and what fixes it |
 | `bun run new-resource …` | Scaffold a resource — see [new-resource](/application/new-resource/) |
 
 `check` prints which step failed and the fix (`Run bun run format`, `Run bun run docs`, and so on).
+
+```bash
+bun run check --json
+```
+
+The same facts as one record — `{ok, durationMs, failed, steps: [{step, ok, fix, output, durationMs}]}` —
+for whoever is reading with a program rather than with their eyes. The human
+output is untouched by the flag, and the exit code is the same either way: a
+contract that changed with the output format would be a trap.
+
+`bun run ok --json` does **not** work, and cannot: `ok` is `check && test:unit`,
+and `bun run` appends the argument to the end of that chain, where it reaches
+`bun test` instead. Call `bun run check --json` and `bun run test:unit`
+separately.
 
 ## Tests
 

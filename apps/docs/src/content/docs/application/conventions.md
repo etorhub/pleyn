@@ -25,6 +25,26 @@ failed and what to do about it. Nothing is finished until this is green.
 
 `bun run test:db` additionally runs the tests that need Postgres.
 
+## Asking the application
+
+Before guessing at a URL, a swap target, or why nothing connects — ask:
+
+```
+bun run cli routes                       every route: page or fragment, open or guarded
+bun run cli request <path> --as <email>  a request, in process, with a session
+bun run cli request … --swap             the DOM after htmx has swapped the response in
+bun run cli doctor                       what is wrong with this checkout, and the fix
+```
+
+Every one takes `--json`, and under it stdout carries the record and nothing
+else. `--swap` is the one to reach for: it reports the document the interaction
+leaves behind and the violations the swap **created** in it, which is where the
+failures in this stack live — a response can be impeccable and still leave two
+`#task-list`s on the page.
+
+The commands are listed in `docs/reference.md`, generated from
+`src/cli/commands.ts`. Full reference: [App CLI](/application/cli/).
+
 ## The shape of a resource
 
 Every resource under `src/routes/` is **four files with fixed names**:

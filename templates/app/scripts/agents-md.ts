@@ -24,6 +24,7 @@
 import { readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
+import { COMMANDS } from "../src/cli/commands.ts";
 import { OOB_TARGETS } from "../src/lib/oob.ts";
 
 const ROOT = resolve(import.meta.dir, "..");
@@ -83,6 +84,26 @@ async function resourcesTable(): Promise<string> {
 }
 
 /**
+ * The operational commands, as `src/cli/commands.ts` declares them.
+ *
+ * Nothing here starts the application: the table holds metadata and a lazy
+ * loader, so generating documentation costs an import of one small module
+ * rather than a Hono instance and a database pool.
+ */
+function commandsTable(): string {
+  const rows = COMMANDS.toSorted((a, b) => a.name.localeCompare(b.name)).map(
+    (command) =>
+      `| \`${command.name}\` | ${command.summary} | ${command.needsDb ? "yes" : "—"} |`,
+  );
+
+  return [
+    "| Command | What it does | Needs Postgres |",
+    "| ------- | ------------ | -------------- |",
+    ...rows,
+  ].join("\n");
+}
+
+/**
  * The generated sections live in `docs/`, not in `AGENTS.md`.
  *
  * `AGENTS.md` is what has to fit in the window of whoever is working; these
@@ -93,6 +114,7 @@ async function resourcesTable(): Promise<string> {
 const SECTIONS: Section[] = [
   { name: "oob", file: "docs/reference.md", generate: oobTable },
   { name: "resources", file: "docs/reference.md", generate: resourcesTable },
+  { name: "commands", file: "docs/reference.md", generate: commandsTable },
 ];
 
 function markers(name: string): { start: string; end: string } {
@@ -187,7 +209,7 @@ async function main(): Promise<void> {
 
   console.error(
     `[docs] the generated sections no longer match the code: ${stale.join(", ")}\n\n` +
-      "They come from `src/lib/oob.ts` and `src/routes/`; they are not edited by hand.\n" +
+      "They come from `src/lib/oob.ts`, `src/routes/` and `src/cli/commands.ts`;\nthey are not edited by hand.\n" +
       "Run `bun run docs` and check again.",
   );
   process.exit(1);

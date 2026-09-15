@@ -37,3 +37,20 @@ The four-file rule, as it stands.
 | `tasks/` | yes       | yes     | yes         | yes       |
 
 <!-- /generated:resources -->
+
+## CLI commands
+
+What `bun run cli` can be asked, out of `src/cli/commands.ts`. Each command
+takes `--json`; `bun run cli <command> --help` prints its usage.
+
+<!-- generated:commands -->
+
+| Command   | What it does                                                    | Needs Postgres |
+| --------- | --------------------------------------------------------------- | -------------- |
+| `doctor`  | Check the environment and say what to run to fix it             | —              |
+| `request` | Perform a request against the application, in process           | yes            |
+| `routes`  | Every route: page or fragment, open or behind the session guard | —              |
+| `seed`    | Create the demo user and some rows. Idempotent on the email     | yes            |
+| `user`    | Create an empty account                                         | yes            |
+
+<!-- /generated:commands -->

@@ -6,13 +6,6 @@ description: "Public exports of htmx-contract."
 import { Content as Exports } from "../../../generated/exports.md";
 import { Content as Versions } from "../../../generated/versions.md";
 
-:::note[TODO]
-Expand with hand-written signatures and examples for `checkDocument`,
-`checkResponse`, `swapAndCheck`, `formatViolations`, `applySwap`, `inspect`,
-`pollAttributes`, and the fixture constants. The export table below is generated
-and must stay generated.
-:::
-
 <Versions />
 
 <Exports />
@@ -29,3 +22,73 @@ and must stay generated.
 
 Assert on the DOM *after* the swap, not on the response body. The response body
 is not what the user ends up looking at.
+
+## Signatures
+
+```ts
+checkDocument(
+  html: string,
+  options?: { fragment?: boolean; knownIds?: Iterable<string> },
+): Promise<Violation[]>
+
+checkResponse(options: ResponseOptions): Promise<Violation[]>
+
+swapAndCheck(options: ResponseOptions): Promise<SwapResult & { violations: Violation[] }>
+
+formatViolations(violations: readonly Violation[]): string
+```
+
+`ResponseOptions` extends the swap input:
+
+```ts
+{
+  page: string;
+  response: string;
+  headers?: Headers | Record<string, string>;
+  status?: number;
+  target?: string | null;
+  swap?: string;           // default innerHTML
+  allowErrorSwap?: boolean; // default true — matches apps that swap 4xx toasts
+  knownIds?: Iterable<string>;
+}
+```
+
+`SwapResult`: `{ html, swap, target, swapped, remainder }`.
+
+## Subpath exports
+
+| Import | What you get |
+| --- | --- |
+| `htmx-contract/swap` | `applySwap`, `MODELLED` |
+| `htmx-contract/inspect` | `inspect`, `attributeOf`, `innerHtmlOf`, `outerHtmlOf`, `rootElement`, `withoutOob`, `BOUNDED_POLL_ATTR`, … |
+| `htmx-contract/rules` | `RULES` and the individual rule functions |
+| `htmx-contract/poll` | `pollAttributes(options)`, `readAttempt(value)` |
+| `htmx-contract/fixtures` | Regression markup constants — see [Fixtures](/htmx-contract/fixtures/) |
+
+### `applySwap`
+
+Same options as `checkResponse` (minus `knownIds`). Returns the page after the
+[modelled](/htmx-contract/model/) swap. Prefer `swapAndCheck` in tests so
+violations and the resulting DOM travel together.
+
+### `inspect` helpers
+
+`inspect(html)` → a `Snapshot` (ids, fields, polls, OOB nodes, hx elements).
+`attributeOf` / `innerHtmlOf` / `outerHtmlOf` pull pieces out for assertions
+without a browser. `withoutOob` strips OOB nodes the way htmx does before the
+main swap.
+
+### `pollAttributes`
+
+```ts
+pollAttributes({
+  url, target, attempt, maxAttempts,
+  swap?, everyMs?, attemptParam?,
+}): string | null
+```
+
+Returns the attribute string for one more attempt, or `null` when exhausted so
+the caller can render a terminal state. See [Fixtures](/htmx-contract/fixtures/)
+and the [bounded-poll recipe](/recipes/bounded-poll/).
+
+Narrative usage: [Usage](/htmx-contract/usage/).

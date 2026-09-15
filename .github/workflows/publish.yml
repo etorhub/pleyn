@@ -1,0 +1,40 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+      # Node ≥22.14 and npm ≥11.5.1 are required for trusted publishing (OIDC).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+      - run: bun install --frozen-lockfile
+      # Prefer OIDC when a Trusted Publisher is configured. For the first
+      # publish of a brand-new package name, set the NPM_TOKEN repo secret
+      # (granular automation token with publish); remove it after Trusted
+      # Publisher is wired on npmjs.com.
+      - name: Publish htmx-contract
+        working-directory: packages/htmx-contract
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
+      - name: Publish create-pleyn
+        working-directory: packages/create-pleyn
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public

@@ -45,6 +45,3 @@ typically `bun run db:up`, `bun run db:apply`, `bun run cli seed`, and
 - **Docker** only if you want the default Postgres. Without it, pass
   `--no-docker` and point `DATABASE_URL` at a Postgres you already have — see
   [Docker](/application/docker/).
-
-Until `htmx-contract` is on npm, generate with `--no-install` and point the
-project at a local copy — see [Install & create](/getting-started/install/).

@@ -11,8 +11,6 @@ description: "Create a PLEYN application with one command."
 
 ## The happy path
 
-Once `create-pleyn` and `htmx-contract` are on npm:
-
 ```bash
 bun create pleyn my-app
 cd my-app
@@ -27,23 +25,9 @@ Sign in with whatever the CLI printed (by default `demo@example.com` /
 `pleyn-demo-password`). Then `bun run ok` until it is green. Read `AGENTS.md`
 before changing anything — it is short on purpose.
 
-## Until the packages are published
-
-`bun create pleyn` resolves `htmx-contract` from the registry. Until that
-publish lands, generating with a full install is a 404 dressed as a setup
-failure.
-
-From a checkout of this repository:
-
-```bash
-bun packages/create-pleyn/index.ts my-app --no-install --no-git
-```
-
-Then point the generated app at the workspace library (or any local path),
-install, migrate, seed, and build CSS yourself. The [CLI overview](/cli/overview/)
-lists every step the scaffolder would have run.
-
 `--no-docker` is available whenever Postgres is already running somewhere else.
+From a monorepo checkout, you can also run the CLI against the workspace
+template with `--no-install` — see the [CLI overview](/cli/overview/).
 
 ## Flags
 

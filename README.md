@@ -17,7 +17,7 @@ bun create pleyn my-app
 **[Read the docs](https://etorhub.github.io/pleyn/)** — install, conventions,
 CLI, `htmx-contract`, recipes, roadmap.
 
-Until Pages is enabled, build them locally:
+To preview docs locally:
 
 ```bash
 bun install
@@ -32,12 +32,9 @@ Early, and honest about it.
 - ✅ the application template — running, migrated, seeded, its own suite green
 - ✅ `create-pleyn` — verified end to end against a real Postgres
 - ✅ documentation site (`apps/docs`)
-- ⬜ `htmx-contract` published to npm
-- ⬜ `create-pleyn` published to npm
+- ✅ `htmx-contract` published to npm
+- ✅ `create-pleyn` published to npm
 - ⬜ a hosted demo
-
-`bun create pleyn` needs `htmx-contract` on npm to resolve. Until that first
-publish, generate with `--no-install` and point the project at a local copy.
 
 ## This repository
 

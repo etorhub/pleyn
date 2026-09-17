@@ -60,6 +60,18 @@ export interface TaskListProps {
   filters: TaskQuery;
   total: number;
   pages: number;
+  /**
+   * Whether this list is riding along rather than answering.
+   *
+   * The same component plays two parts. When the request targets `#task-list`
+   * — the filter links, the delete button, `GET /tasks/fragment/list` — it is
+   * the response, and it replaces the target by being what came back. When the
+   * request targets something else and the list has changed anyway, as after
+   * `POST /tasks` where the form is the target, it has to say so: without
+   * `hx-swap-oob` htmx leaves it in the remainder and swaps it into the form's
+   * place, and the page ends up with two of every id in it.
+   */
+  oob?: boolean;
 }
 
 /** The list, its filter and its pagination. An out-of-band target. */
@@ -68,6 +80,7 @@ export function TaskList({
   filters,
   total,
   pages,
+  oob = false,
 }: TaskListProps): Html {
   const link = (show: TaskQuery["show"], label: string) => {
     const url = `/tasks${taskQueryToString({ ...filters, show, page: 0 })}`;
@@ -82,7 +95,7 @@ export function TaskList({
     >`;
   };
 
-  return html`<div ${oobAttributes("task-list")}>
+  return html`<div ${oobAttributes("task-list", oob)}>
     <div class="filters" role="group" aria-label="Filter tasks">
       ${link("all", "All")} ${link("open", "Open")} ${link("done", "Done")}
     </div>

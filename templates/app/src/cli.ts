@@ -1,64 +1,65 @@
 /**
- * Small operational commands.
+ * The application's operational commands.
  *
- *   bun run cli seed                            the demo user and some rows
- *   bun run cli seed --email … --password …     the same, with your own details
- *   bun run cli user --email … --password …     an empty account
+ *   bun run cli                      what there is to ask
+ *   bun run cli <command> --help     how to ask it
+ *
+ * This file is dispatch and nothing else: each command lives in `src/cli/` and
+ * is loaded only when it is called, so asking for the route map does not open a
+ * database pool and generating the documentation does not start Hono.
+ *
+ * Most commands take `--json`. That is not decoration either — these commands
+ * are read by agents at least as often as by people, and a shape you can parse
+ * beats a paragraph you have to guess at.
  */
 
+import { COMMANDS, findCommand } from "./cli/commands.ts";
+import { CliError } from "./cli/error.ts";
 import { closeDb } from "./db/client.ts";
-import { hashPassword } from "./lib/auth.ts";
-import { db } from "./db/client.ts";
-import { users } from "./db/schema/index.ts";
-import { seedDemoUser } from "./services/seed.ts";
+import { columns, note } from "./cli/output.ts";
 
-function arg(name: string): string | undefined {
-  const i = process.argv.indexOf(`--${name}`);
-  const value = i === -1 ? undefined : process.argv[i + 1];
-  return value?.startsWith("--") ? undefined : value;
+function listing(): string {
+  const rows = COMMANDS.map((command) => [
+    `  ${command.name}`,
+    command.summary,
+    command.needsDb ? "(needs Postgres)" : "",
+  ]);
+  return `Commands:\n${columns(rows)}\n\n  bun run cli <command> --help`;
 }
 
-function requireArg(name: string): string {
-  const value = arg(name);
-  if (!value) throw new Error(`--${name} is required`);
-  return value;
-}
+async function main(): Promise<number> {
+  const [name, ...rest] = process.argv.slice(2);
 
-const commands: Record<string, () => Promise<void>> = {
-  async seed() {
-    const { created, email } = await seedDemoUser({
-      email: arg("email"),
-      password: arg("password"),
-    });
-    console.log(created ? `Created ${email}` : `${email} already exists`);
-  },
+  if (name === undefined || name === "--help" || name === "-h") {
+    note(listing());
+    return name === undefined ? 1 : 0;
+  }
 
-  async user() {
-    const email = requireArg("email").toLowerCase();
-    const [user] = await db
-      .insert(users)
-      .values({
-        email,
-        fullName: arg("name") ?? "",
-        passwordHash: await hashPassword(requireArg("password")),
-      })
-      .returning();
-    console.log(`Created ${user?.email}`);
-  },
-};
+  const command = findCommand(name);
+  if (!command) {
+    note(`[cli] no command called "${name}".\n\n${listing()}`);
+    return 1;
+  }
 
-const name = process.argv[2];
-const command = name ? commands[name] : undefined;
+  if (rest.includes("--help") || rest.includes("-h")) {
+    note(`${command.summary}.\n\n  ${command.usage}`);
+    return 0;
+  }
 
-if (!command) {
-  console.error(`Commands: ${Object.keys(commands).join(", ")}`);
-  process.exit(1);
+  const outcome = await (await command.load()).run(rest);
+  if (outcome.text !== "") console.log(outcome.text);
+  return outcome.exit;
 }
 
 try {
-  await command();
+  process.exitCode = await main();
 } catch (error) {
-  console.error(error instanceof Error ? error.message : error);
+  if (error instanceof CliError) {
+    note(`[cli] ${error.message}`);
+    if (error.usage) note(`\n  ${error.usage}`);
+  } else {
+    note(error instanceof Error ? error.message : String(error));
+  }
   process.exitCode = 1;
 } finally {
   await closeDb();

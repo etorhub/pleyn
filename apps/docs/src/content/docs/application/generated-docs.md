@@ -23,6 +23,7 @@ never touched. Today:
 | --- | --- |
 | `oob` | `OOB_TARGETS` in `src/lib/oob.ts` |
 | `resources` | directories under `src/routes/` and which of the four `*.ts` files each has |
+| `commands` | `COMMANDS` in `src/cli/commands.ts` — every `bun run cli` command |
 
 Output is Prettier'd so format and check do not fight.
 
@@ -37,6 +38,11 @@ broken. Nothing today fails a resource for being incomplete; see
 [Conventions](/application/conventions/) for the shape a resource is meant to
 have.
 
-Do not edit between the markers. After adding a resource or an OOB target, run
-`bun run docs`. The short rules stay in `AGENTS.md`; the tables live here so
+The command table is why `src/cli/commands.ts` holds metadata and a *lazy*
+loader: generating documentation must not start Hono and construct a database
+pool, and `docs:check` runs inside `bun run check`, in a CI job with no
+database at all.
+
+Do not edit between the markers. After adding a resource, an OOB target or a
+command, run `bun run docs`. The short rules stay in `AGENTS.md`; the tables live here so
 that file stays short.

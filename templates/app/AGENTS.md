@@ -18,6 +18,26 @@ failed and what to do about it. Nothing is finished until this is green.
 
 `bun run test:db` additionally runs the tests that need Postgres.
 
+## Asking the application
+
+Before guessing at a URL, a swap target, or why nothing connects — ask:
+
+```
+bun run cli routes                       every route: page or fragment, open or guarded
+bun run cli request <path> --as <email>  a request, in process, with a session
+bun run cli request … --swap             the DOM after htmx has swapped the response in
+bun run cli doctor                       what is wrong with this checkout, and the fix
+```
+
+Every one takes `--json`, and under it stdout carries the record and nothing
+else. `--swap` is the one to reach for: it reports the document the interaction
+leaves behind and the violations the swap **created** in it, which is where the
+failures in this stack live — a response can be impeccable and still leave two
+`#task-list`s on the page.
+
+The commands are listed in [`docs/reference.md`](docs/reference.md), generated from
+`src/cli/commands.ts`.
+
 ## The shape of a resource
 
 Every resource under `src/routes/` is **four files with fixed names**:
@@ -52,6 +72,14 @@ band via `withOob()`.
 **Every out-of-band target is registered in `src/lib/oob.ts`.** `oobAttributes()`
 accepts no id that is not in the registry, so an unregistered target does not
 compile. The table in `docs/reference.md` is generated from it.
+
+**Registering a target is not sending one.** The registry types the id;
+`hx-swap-oob` is what makes htmx lift the node out of the response, and
+`oobAttributes(id, true)` is what puts it there. A component that is the
+response in one route and a passenger in another — `TaskList` is both — has to
+be told which it is. Left as a passenger without the flag it stays in the
+remainder and is swapped into whatever the request targeted, and the page ends
+up with two of every id in it.
 
 **A response that is nothing but a toast must send `HX-Reswap: none`.** Use
 `toastOnly()`, which does it for you. Without the header htmx swaps the

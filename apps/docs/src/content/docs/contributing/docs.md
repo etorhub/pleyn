@@ -49,7 +49,8 @@ version from those fragments.
 
 `starlight-versions` is a dependency and is ready to wire in
 `astro.config.mjs`, but the plugin **requires at least one archived version** —
-so it stays off until the first npm release that needs an archive.
+so it stays off until you archive a prior release (for example when shipping
+past the current `0.1.0`).
 
 When you publish a meaningful `create-pleyn` release and want a version switcher:
 

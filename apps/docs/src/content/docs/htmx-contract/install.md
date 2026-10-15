@@ -7,7 +7,8 @@ description: "Add htmx-contract as a Bun-only dev dependency."
 bun add -d htmx-contract
 ```
 
-Zero dependencies. Built on Bun's `HTMLRewriter`. Knows nothing about your
+[`htmx-contract`](https://www.npmjs.com/package/htmx-contract) on npm. Zero
+dependencies. Built on Bun's `HTMLRewriter`. Knows nothing about your
 application. **Bun only**, for now — the package requires Bun ≥ 1.2.
 
 Generated PLEYN apps already depend on `htmx-contract: ^0.1.0` as a

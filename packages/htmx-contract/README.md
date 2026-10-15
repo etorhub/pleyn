@@ -5,6 +5,8 @@ Checks the seam between the HTML a route returns and the DOM that receives it.
 Zero dependencies. Built on Bun's `HTMLRewriter`. Knows nothing about your
 application.
 
+[`htmx-contract` on npm](https://www.npmjs.com/package/htmx-contract).
+
 ```bash
 bun add -d htmx-contract
 ```

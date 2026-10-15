@@ -1,6 +1,7 @@
 # create-pleyn
 
 Creates a [PLEYN](https://github.com/etorhub/pleyn) application.
+[`create-pleyn` on npm](https://www.npmjs.com/package/create-pleyn).
 
 ```bash
 bun create pleyn my-app

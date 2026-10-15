@@ -4,8 +4,8 @@ PLEYN is one monorepo with three product parts and a docs site:
 
 | Path | What it is |
 | --- | --- |
-| `packages/htmx-contract` | The checker. Publishable on its own. |
-| `packages/create-pleyn` | The CLI. `bun create pleyn` runs this. |
+| `packages/htmx-contract` | The checker — [`htmx-contract`](https://www.npmjs.com/package/htmx-contract) on npm. |
+| `packages/create-pleyn` | The CLI — [`create-pleyn`](https://www.npmjs.com/package/create-pleyn); `bun create pleyn` runs this. |
 | `templates/app` | What the CLI generates — a real application. |
 | `apps/docs` | The Starlight documentation site. |
 

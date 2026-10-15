@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -24,6 +24,17 @@ jobs:
       - name: Ensure npm supports trusted publishing
         run: npm install -g npm@latest
       - run: bun install --frozen-lockfile
+      - name: Require matching package versions
+        id: version
+        run: |
+          CLI=$(jq -r .version packages/create-pleyn/package.json)
+          LIB=$(jq -r .version packages/htmx-contract/package.json)
+          if [ "$CLI" != "$LIB" ]; then
+            echo "Version mismatch: create-pleyn=$CLI htmx-contract=$LIB" >&2
+            exit 1
+          fi
+          echo "version=$CLI" >> "$GITHUB_OUTPUT"
+          echo "tag=v$CLI" >> "$GITHUB_OUTPUT"
       # Auth via OIDC Trusted Publisher (etorhub/pleyn → publish.yml on each
       # package). No NPM_TOKEN. For a brand-new package name that has never
       # been on the registry, temporarily set NPM_TOKEN and restore NODE_AUTH_TOKEN
@@ -34,3 +45,23 @@ jobs:
       - name: Publish create-pleyn
         working-directory: packages/create-pleyn
         run: npm publish --provenance --access public
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; skipping."
+            exit 0
+          fi
+          {
+            echo "## Packages"
+            echo
+            echo "- [\`htmx-contract@${VERSION}\`](https://www.npmjs.com/package/htmx-contract/v/${VERSION})"
+            echo "- [\`create-pleyn@${VERSION}\`](https://www.npmjs.com/package/create-pleyn/v/${VERSION})"
+            echo
+            echo "Published from GitHub Actions with npm provenance."
+            echo "\`bun create pleyn\` installs \`create-pleyn\` from the registry."
+          } > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$TAG" --title "$TAG" --notes-file "$RUNNER_TEMP/release-notes.md"

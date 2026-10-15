@@ -28,19 +28,17 @@ bun run docs:dev
 
 Early, and honest about it.
 
-- ✅ `htmx-contract` extracted, generalised, tests green
-- ✅ the application template — running, migrated, seeded, its own suite green
-- ✅ `create-pleyn` — verified end to end against a real Postgres
+- ✅ [`htmx-contract@0.1.0`](https://www.npmjs.com/package/htmx-contract) on npm (provenance)
+- ✅ [`create-pleyn@0.1.0`](https://www.npmjs.com/package/create-pleyn) on npm (provenance)
 - ✅ documentation site (`apps/docs`)
-- ✅ `htmx-contract` published to npm
-- ✅ `create-pleyn` published to npm
+- ✅ Trusted Publisher → GitHub Actions `publish.yml` (no long-lived npm token)
 - ⬜ a hosted demo
 
 ## This repository
 
 ```
-packages/htmx-contract     the checker. Publishable on its own.
-packages/create-pleyn      the CLI. `bun create pleyn` runs this.
+packages/htmx-contract     the checker — https://www.npmjs.com/package/htmx-contract
+packages/create-pleyn      the CLI — `bun create pleyn` → create-pleyn on npm
 templates/app              what it generates: a real, running application
 apps/docs                  Starlight documentation site
 ```

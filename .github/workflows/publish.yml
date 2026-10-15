@@ -24,17 +24,13 @@ jobs:
       - name: Ensure npm supports trusted publishing
         run: npm install -g npm@latest
       - run: bun install --frozen-lockfile
-      # Prefer OIDC when a Trusted Publisher is configured. For the first
-      # publish of a brand-new package name, set the NPM_TOKEN repo secret
-      # (granular automation token with publish); remove it after Trusted
-      # Publisher is wired on npmjs.com.
+      # Auth via OIDC Trusted Publisher (etorhub/pleyn → publish.yml on each
+      # package). No NPM_TOKEN. For a brand-new package name that has never
+      # been on the registry, temporarily set NPM_TOKEN and restore NODE_AUTH_TOKEN
+      # on these steps — see contributing/publishing.md.
       - name: Publish htmx-contract
         working-directory: packages/htmx-contract
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public
       - name: Publish create-pleyn
         working-directory: packages/create-pleyn
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public

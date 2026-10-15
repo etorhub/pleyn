@@ -111,11 +111,8 @@ jobs:
             "CREATE ROLE \"trial-app\" LOGIN PASSWORD 'trial-app';"
           PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -c \
             "CREATE DATABASE \"trial-app\" OWNER \"trial-app\";"
-      # `--no-install` so the generated project can be pointed at the
-      # workspace copy of htmx-contract first. Until the library is published,
-      # resolving `^0.1.0` from the registry is a 404 — which is a fact about
-      # the release order, not about this code, and is not worth failing CI
-      # over every day until then.
+      # `--no-install` + `file:` rewrite so CI always exercises the workspace
+      # copy of htmx-contract. Real users resolve `^0.1.0` from the registry.
       - name: Generate a project
         run: bun packages/create-pleyn/index.ts "$RUNNER_TEMP/trial-app" --no-docker --no-git --no-install
       - name: Point it at the library in this checkout

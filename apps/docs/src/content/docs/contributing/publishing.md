@@ -30,12 +30,21 @@ Bump versions, run `bun run docs:sync`, and follow the version process on
 ## Workflow
 
 [`.github/workflows/publish.yml`](https://github.com/etorhub/pleyn/blob/main/.github/workflows/publish.yml)
-runs on **workflow_dispatch**. It publishes `htmx-contract`, then `create-pleyn`,
-with `--provenance --access public`. Bun is installed so `create-pleyn`'s
-`prepack` can bundle the template.
+runs on **workflow_dispatch**. It:
+
+1. Checks that `htmx-contract` and `create-pleyn` share the same version.
+2. Publishes `htmx-contract`, then `create-pleyn`, with
+   `--provenance --access public` (Bun is installed so `create-pleyn`'s
+   `prepack` can bundle the template).
+3. Creates a GitHub Release tagged `v<version>` that links to both npm pages
+   (skipped if that tag already exists).
 
 Auth is **OIDC Trusted Publishing** — no long-lived `NPM_TOKEN` on the repo.
-The job needs `permissions.id-token: write` (already set).
+The job needs `permissions.id-token: write` and `contents: write` (already set).
+
+Releases appear under
+[github.com/etorhub/pleyn/releases](https://github.com/etorhub/pleyn/releases);
+the packages themselves live on npm, not GitHub Packages.
 
 ### Trusted Publisher
 

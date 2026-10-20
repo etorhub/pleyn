@@ -25,6 +25,7 @@ import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 
 import { CLI_FLAGS } from "./flags.ts";
+import { canReachDatabaseUrl } from "./reachability.ts";
 
 export { CLI_FLAGS, type CliFlag } from "./flags.ts";
 
@@ -286,6 +287,39 @@ async function main(): Promise<void> {
   const compose = await Bun.file(composePath).text();
   await Bun.write(composePath, compose.replaceAll("pleyn", options.name));
 
+  // --- Database (external) ---------------------------------------------------
+  //
+  // With --no-docker, Compose never runs and .env already holds a generated
+  // DATABASE_URL. Check reachability *before* install when migrate would run,
+  // so a closed port fails fast instead of installing then migrating blindly.
+  let databaseReady = false;
+
+  if (!options.docker) {
+    step("Skipping Compose (--no-docker)");
+    note("Compose will not start Postgres. DATABASE_URL that will be used:");
+    note(`  ${databaseUrl}`);
+
+    if (options.install) {
+      if (!(await canReachDatabaseUrl(databaseUrl))) {
+        die(
+          `nothing is accepting connections for DATABASE_URL:\n  ${databaseUrl}`,
+          [
+            `cd ${options.name}`,
+            "edit .env and set DATABASE_URL to a Postgres you can reach",
+            "bun install",
+            "bun run db:apply",
+            "bun run cli seed",
+          ],
+        );
+      }
+      databaseReady = true;
+    } else {
+      note("edit .env before bun install / db:apply / cli seed if that URL is wrong");
+      // True so the final checklist does not suggest `bun run db:up` (Compose).
+      databaseReady = true;
+    }
+  }
+
   // --- Install ---------------------------------------------------------------
   if (options.install) {
     step("Installing dependencies");
@@ -297,13 +331,8 @@ async function main(): Promise<void> {
     note("skipping the install (--no-install)");
   }
 
-  // --- Database --------------------------------------------------------------
-  let databaseReady = false;
-
-  if (!options.docker) {
-    note("skipping Postgres (--no-docker); DATABASE_URL in .env is used as it stands");
-    databaseReady = true;
-  } else if (have("docker")) {
+  // --- Database (Compose) ----------------------------------------------------
+  if (options.docker && have("docker")) {
     step("Starting Postgres");
     const { ok, output } = await run(["docker", "compose", "up", "-d"], options.directory);
     if (!ok) {
@@ -317,7 +346,7 @@ async function main(): Promise<void> {
       note("Postgres started but never became ready. Finish it with:");
       note("  bun run db:apply && bun run cli seed");
     }
-  } else {
+  } else if (options.docker) {
     step("Starting Postgres");
     note("docker was not found on PATH, so Postgres has not been started.");
     note("Point DATABASE_URL in .env at a Postgres you have, then:");

@@ -4,6 +4,6 @@ Flags accepted by `bun create pleyn <directory>`.
 
 | Flag | What it does |
 | --- | --- |
-| `--no-docker` | do not start Postgres; use DATABASE_URL as it stands |
+| `--no-docker` | skip Compose; edit .env before DB steps (pair with --no-install if needed) |
 | `--no-install` | do not run bun install |
 | `--no-git` | do not create a git repository |

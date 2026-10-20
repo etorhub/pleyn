@@ -26,14 +26,26 @@ Sign in with whatever the CLI printed (by default `demo@example.com` /
 `pleyn-demo-password`). Then `bun run ok` until it is green. Read `AGENTS.md`
 before changing anything — it is short on purpose.
 
-`--no-docker` is available whenever Postgres is already running somewhere
-else — but on its own it does not pause for you to point `DATABASE_URL`
-anywhere. Install still runs by default, and migration follows immediately
-after, against the `DATABASE_URL` the CLI just generated
-(`postgresql://<name>:<name>@127.0.0.1:5432/<name>`). Unless that role and
-database already exist on your Postgres, pair it with `--no-install`: the CLI
-then stops after writing `.env`, so you can edit `DATABASE_URL` before running
-`bun install`, `bun run db:apply` and `bun run cli seed` yourself — see
+## Existing Postgres
+
+When you already have Postgres (and do not want Compose), prefer stopping after
+`.env` is written so you can point `DATABASE_URL` before any DB command:
+
+```bash
+bun create pleyn my-app --no-docker --no-install
+cd my-app
+# edit .env — set DATABASE_URL
+bun install
+bun run db:apply
+bun run cli seed
+bun run dev
+```
+
+`--no-docker` alone still installs. The CLI prints the exact `DATABASE_URL` it
+wrote (`postgresql://<name>:<name>@127.0.0.1:5432/<name>`), checks that the
+host/port accepts a TCP connection, and only then migrates. If nothing is
+listening, it exits with recovery steps (edit `.env`, then install / apply /
+seed) instead of migrating against a closed port. See also
 [Docker](/application/docker/) and [`--no-install`](/cli/flags/).
 
 From a monorepo checkout, `--no-install` also lets you run the CLI against the

@@ -20,21 +20,15 @@ database.
 
 ## `--no-docker`
 
-Skip Compose entirely. `DATABASE_URL` in `.env` is used as written — but
-`.env` is written by `create-pleyn` itself, with a database URL derived from
-the project name, and nothing pauses between that and migrating: by default
-install runs and migration follows straight after, against that generated
-URL. If your existing Postgres does not already have a matching role and
-database, pass `--no-install` as well. The CLI then stops after writing
-`.env`, so you can edit `DATABASE_URL` before:
+Skip Compose entirely. The CLI prints the generated `DATABASE_URL`, and when
+install is on it refuses to migrate if the host/port is unreachable (exit with
+recovery steps). Auth and “does this role exist” are still left to `db:apply`.
 
-```bash
-bun install
-bun run db:apply
-bun run cli seed
-```
+For an existing Postgres whose credentials do not match the generated URL, use
+the [Existing Postgres](/getting-started/install/#existing-postgres) recipe
+(`--no-docker --no-install`, edit `.env`, then install / apply / seed).
 
-If Docker is missing from `PATH`, the CLI takes the same finish path: notes
+If Docker is missing from `PATH`, the CLI takes the soft finish path: notes
 only, project kept — see [Failures](/cli/failures/).
 
 CI for the template mirrors the same image and credentials

@@ -15,7 +15,8 @@ export interface CliFlag {
 export const CLI_FLAGS: readonly CliFlag[] = [
   {
     flag: "--no-docker",
-    description: "do not start Postgres; use DATABASE_URL as it stands",
+    description:
+      "skip Compose; edit .env before DB steps (pair with --no-install if needed)",
   },
   {
     flag: "--no-install",
